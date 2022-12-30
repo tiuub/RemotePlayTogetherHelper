@@ -168,7 +168,7 @@ class Forms:
         self.printc(" Choose a action:")
         self.printc("\t(s)tart\t\t- Will start the game", Const.G)
         self.printc(
-            "\t(a)rgs\t- Will update command-line args for the game", Const.O)
+            "\t(a)rgs\t\t- Will update command-line args for the game", Const.O)
         self.printc("\t(d)elete\t- Will remove the game from the list", Const.O)
         self.printc("\t(r)ename\t- Will rename the game", Const.O)
         self.printc("\t(b)ack\t\t- Will go back to the game selection", Const.O)
