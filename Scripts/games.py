@@ -22,8 +22,8 @@ class Games:
             return True
         return False
 
-    def addgame(self, name, path, host=False):
-        game = {"name": name, "path": path, "host": host}
+    def addgame(self, name, path, host=False, args=''):
+        game = {"name": name, "path": path, "host": host, "args": args}
         self.games.append(game)
         if self.savegames():
             return True
@@ -51,6 +51,11 @@ class Games:
             return self.games[index]["host"]
         return False
 
+    def getargs(self, index):
+        if 0 <= index < len(self.games) and "args" in self.games[index]:
+            return self.games[index]["args"]
+        return False
+
     def setname(self, index, name):
         if 0 <= index < len(self.games) and "name" in self.games[index]:
             self.games[index]["name"] = name
@@ -68,6 +73,13 @@ class Games:
     def sethost(self, index, host):
         if 0 <= index < len(self.games) and "host" in self.games[index]:
             self.games[index]["host"] = host
+            if self.savegames():
+                return True
+        return False
+
+    def setargs(self, index, args):
+        if 0 <= index < len(self.games) and "args" in self.games[index]:
+            self.games[index]["args"] = args
             if self.savegames():
                 return True
         return False

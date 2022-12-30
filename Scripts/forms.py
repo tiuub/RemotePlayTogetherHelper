@@ -4,6 +4,7 @@ import subprocess
 import sys
 import time
 import datetime
+import shlex
 
 
 from const import Const
@@ -36,7 +37,9 @@ class Forms:
             if os.path.isfile(path):
                 break
             self.printc(" Please enter a valid file.", Const.R)
-        self.games.addgame(name=name, path=path)
+        args = input(
+            " Enter any command-line args, or just press enter to skip: ")
+        self.games.addgame(name=name, path=path, args=args)
 
     def showAddedGame(self, name):
         self.cls()
@@ -54,6 +57,20 @@ class Forms:
         elif c.lower() != "back":
             self.games.setname(index=index, name=c)
 
+    def showUpdateArgsGame(self, index):
+        self.cls()
+        self.printc(" Additional commands:", Const.BB)
+        self.printc("\tback or quit (Must be equals)", Const.BB)
+        self.newline()
+        self.printc(
+            f" Current args for {self.games.getname(index=index)}: {self.games.getargs(index=index)}")
+        c = input(" Type in the new args for %s: " %
+                  (self.games.getname(index=index)))
+        if c.lower() == "quit":
+            sys.exit(0)
+        elif c.lower() != "back":
+            self.games.setargs(index=index, args=c)
+
     def showDeleteGame(self, index):
         self.cls()
         self.printc(" Selected Game:")
@@ -61,6 +78,9 @@ class Forms:
         self.printc("\tName:\t%s" % self.games.getname(index=index), Const.G)
         self.printc("\tPath:\t\"%s\"" %
                     (self.games.getpath(index=index)), Const.BB)
+        if self.games.getargs(index=index):
+            self.printc(
+                f"\tArgs:\t{self.games.getargs(index=index)}", Const.BB)
         self.newline()
 
         c = input(Const.R + " Do you really want to delete \"%s\" (yes|no)?: " % (
@@ -141,9 +161,14 @@ class Forms:
         self.printc("\tName:\t%s" % self.games.getname(index=index), Const.G)
         self.printc("\tPath:\t\"%s\"" %
                     self.games.getpath(index=index), Const.BB)
+        if self.games.getargs(index=index):
+            self.printc(
+                f"\tArgs:\t{self.games.getargs(index=index)}", Const.BB)
         self.newline()
         self.printc(" Choose a action:")
         self.printc("\t(s)tart\t\t- Will start the game", Const.G)
+        self.printc(
+            "\t(a)rgs\t- Will update command-line args for the game", Const.O)
         self.printc("\t(d)elete\t- Will remove the game from the list", Const.O)
         self.printc("\t(r)ename\t- Will rename the game", Const.O)
         self.printc("\t(b)ack\t\t- Will go back to the game selection", Const.O)
@@ -155,6 +180,9 @@ class Forms:
             action = input(" Please enter your action here: ").lower()
             if action[0] == "s":
                 self.showStartGame(index)
+                break
+            elif action[0] == "a":
+                self.showUpdateArgsGame(index)
                 break
             elif action[0] == "d":
                 self.showDeleteGame(index)
@@ -176,8 +204,12 @@ class Forms:
         if os.path.isfile(self.games.getpath(index=index)):
             path = Path(self.games.getpath(index=index))
             os.chdir(path.parent)
-            subprocess.Popen([path.__str__()], stdin=None,
-                             stderr=None, close_fds=None)
+            if self.games.getargs(index=index):
+                subprocess.Popen([path.__str__()] + shlex.split(self.games.getargs(index=index)), stdin=None,
+                                 stderr=None, close_fds=None)
+            else:
+                subprocess.Popen([path.__str__()], stdin=None,
+                                 stderr=None, close_fds=None)
             sys.exit(0)
 
     ##################
