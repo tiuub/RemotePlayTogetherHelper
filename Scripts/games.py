@@ -1,6 +1,7 @@
 import json
 import os
 
+
 class Games:
     games = []
 
@@ -22,7 +23,7 @@ class Games:
         return False
 
     def addgame(self, name, path, host=False):
-        game = { "name": name, "path": path, "host": host }
+        game = {"name": name, "path": path, "host": host}
         self.games.append(game)
         if self.savegames():
             return True

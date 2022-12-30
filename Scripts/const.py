@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+
 class Const:
     version = "1.0.0"
     updateurl = "https://raw.githubusercontent.com/tiuub/RemotePlayTogetherHelper/master/VERSION"
